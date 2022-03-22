@@ -1,5 +1,5 @@
 {
-  "name": "scheduler",
+  "name": "plant-app",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -8,9 +8,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "babel-plugin-styled-components": "^2.0.6",
     "next": "12.0.4",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "styled-components": "^5.3.3"
   },
   "devDependencies": {
     "eslint": "7.32.0",
