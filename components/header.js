@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import Plant from '../public/Plant'
+import Link from 'next/link'
 
 const Head = styled.header`
     display: grid; 
@@ -64,12 +65,13 @@ export default function Header() {
     return (
         <Head>
             <div className='logo'>
-                <Plant className="plant" />
+                
+                <Link href="/"><a><Plant className="plant" /></a></Link>
             </div>
             <nav>
-                <p onClick={()=> console.log('clicked')}>New</p>
-                <p>Active</p>
-                <p>Past</p>
+                <Link href="/new"><p onClick={()=> console.log('clicked')}>New</p></Link>
+                <Link href="/active"><p>Active</p></Link>
+                <Link href="/past"><p>Past</p></Link>
             </nav>
             <div className="user">
                 <p>JE</p>
