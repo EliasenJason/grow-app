@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Image from 'next/image'
 
 export default function CreatePlantForm() {
     const [imageSrc, setImageSrc] = useState()
@@ -39,9 +40,8 @@ export default function CreatePlantForm() {
             <label htmlFor="date">Date</label>
             <input id="date" name="date" type="date" required />
             <input type="file" name="file" onChange={handleFileChange} />
-            <img src={imageSrc} />
+            {imageSrc ? <Image src={imageSrc} alt="loaded image"/> : <p>no image</p>}
             <button type="submit">Create Plant</button>
-            <img src={cloudinaryImageUrl} />
         </form>
     )
 }
