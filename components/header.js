@@ -77,12 +77,12 @@ export default function Header() {
                 <Link href="/"><a><Plant className="plant" /></a></Link>
             </div>
             <nav>
-                <Link href="/new" passHref><a onClick={()=> console.log('clicked')}>New</a></Link>
-                <Link href="/active" passHref><a>Active</a></Link>
-                <Link href="/past" passHref><a>Past</a></Link>
+                <Link href="/new"><a onClick={()=> console.log('clicked')}>New</a></Link>
+                <Link href="/active"><a>Active</a></Link>
+                <Link href="/past"><a>Past</a></Link>
             </nav>
             <div className="user">
-                {user ? <a href="/api/auth/logout" passHref>LogOut</a> : <a href="/api/auth/login" passHref>Login</a>}
+                {user ? <Link href="/api/auth/logout">LogOut</Link> : <Link href="/api/auth/login">Login</Link>}
                 {user ? <p>{user.name.split(' ').map(word => word[0]).join('')}</p> : <p>Welcome, Guest</p>}
                 
             </div>            

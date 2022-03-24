@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import Image from 'next/image'
 
+//TODO: replace form element below with styled component and make it pretty
+
 export default function CreatePlantForm() {
     const [imageSrc, setImageSrc] = useState()
     const [cloudinaryImageUrl, setCloudinaryImageUrl] = useState()
@@ -14,7 +16,8 @@ export default function CreatePlantForm() {
         reader.readAsDataURL(changeEvent.target.files[0])
     }
     
-    //send picture to cloudinary and form data along with cloudinary url from fetch response to mongoDB
+    //sends the picture to cloudinary and saves the url to the picture into state
+    //TODO: setup mongodb and send data to database, use the response from cloudinary fetch (currently set to state) to get the url to the image
     const handleOnSubmit = async (event) => {
         event.preventDefault();
         const form = event.currentTarget
@@ -30,7 +33,9 @@ export default function CreatePlantForm() {
             body: formData
         })
         .then(r => r.json())
-        .then(json => setCloudinaryImageUrl(json.url))
+        .then(json => {
+            setCloudinaryImageUrl(json.url)
+        })
     }
 
     return (
@@ -40,7 +45,7 @@ export default function CreatePlantForm() {
             <label htmlFor="date">Date</label>
             <input id="date" name="date" type="date" required />
             <input type="file" name="file" onChange={handleFileChange} />
-            {imageSrc ? <Image src={imageSrc} alt="loaded image"/> : <p>no image</p>}
+            {imageSrc ? <Image src={imageSrc} height="250px" width="250px" alt="loaded image"/> : <p>no image</p>}
             <button type="submit">Create Plant</button>
         </form>
     )
