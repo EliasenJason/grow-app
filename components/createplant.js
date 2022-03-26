@@ -1,12 +1,15 @@
-import { useState } from 'react'
+import { useUser } from '@auth0/nextjs-auth0'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
 //TODO: replace form element below with styled component and make it pretty
 
 export default function CreatePlantForm() {
     const [imageSrc, setImageSrc] = useState()
-    const [cloudinaryImageUrl, setCloudinaryImageUrl] = useState()
+    const [dataForDatabase, setdataForDatabase] = useState({})
+    const userEmail = useUser().user.email
 
+    useEffect(() => console.log(dataForDatabase),[dataForDatabase])
     //when file is changed it is set to state and readAsDataURL so it can be displayed
     const handleFileChange = (changeEvent) => {
         const reader = new FileReader()
@@ -15,9 +18,15 @@ export default function CreatePlantForm() {
         }
         reader.readAsDataURL(changeEvent.target.files[0])
     }
+
+    const handleChange = (event) => {
+        const name = event.target.name;
+        const value = event.target.value;
+        setdataForDatabase(values => ({...values, [name]: value}))
+    }
     
-    //sends the picture to cloudinary and saves the url to the picture to be saved into mongodb
-    //TODO: setup mongodb and send data to database, use the response from cloudinary fetch (currently set to state) to get the url to the image
+    //sends the picture to cloudinary and sets the url to the picture into dataForDatabase state
+    //TODO send data at the end to mongoDB and redirect to active page
     const handleOnSubmit = async (event) => {
         event.preventDefault();
         const form = event.currentTarget
@@ -34,17 +43,15 @@ export default function CreatePlantForm() {
         })
         .then(r => r.json())
         .then(json => {
-            setCloudinaryImageUrl(json.url)
-            console.log(json.url)
+            setdataForDatabase(values => ({...values, pictureUrl: json.url, userEmail: userEmail}))
         })
-        console.log(event.target.date.value)
     }
     return (
         <form method="post" onSubmit={handleOnSubmit}>
             <label htmlFor="name">Name</label>
-            <input id="name" name="name" type="text" required />
+            <input id="name" name="name" type="text" required onChange={handleChange}/>
             <label htmlFor="date">Date</label>
-            <input id="date" name="date" type="date" required />
+            <input id="date" name="date" type="date" required onChange={handleChange}/>
             <input type="file" name="file" onChange={handleFileChange} />
             {imageSrc ? <Image src={imageSrc} height="250px" width="250px" alt="loaded image"/> : <p>no image</p>}
             <button type="submit">Create Plant</button>
