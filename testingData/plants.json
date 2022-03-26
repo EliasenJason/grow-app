@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "name": "Lettuce",
+    "date": "2022-03-24",
+    "image": "https://res.cloudinary.com/dszul57q8/image/upload/v1648225225/My%20Uploads/q8j4dv0yl0i26tz7k4ts.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Spinach",
+    "date": "2022-03-21",
+    "image": "https://res.cloudinary.com/dszul57q8/image/upload/v1648225263/My%20Uploads/ykinjemfbwjvw2u9u6lx.jpg"
+  }
+]

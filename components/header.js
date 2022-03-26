@@ -1,3 +1,4 @@
+import { useUser } from '@auth0/nextjs-auth0'
 import styled from 'styled-components'
 import Plant from '../public/Plant'
 import Link from 'next/link'
@@ -22,7 +23,7 @@ const Head = styled.header`
         font-size: 2rem;
         text-transform: uppercase;
         align-items: center;
-        p {
+        a {
             font-size: 1.6rem;
             padding-bottom: .3em;
             border-bottom: solid green 5px;
@@ -32,14 +33,21 @@ const Head = styled.header`
     .user {
         width: 100%;
         height: 100%;
-        font-size: 2rem;
         grid-area: user;
-        font-family: 'comforter', cursive;
-        font-weight: bolder;
-        text-align: right;
     }
     .user p {
+        font-weight: bolder;
+        font-size: 1.5rem;
+        font-family: 'comforter', cursive;
+        text-align: right;
         margin-right: .5em;
+    }
+    .user a {
+        display: block;
+        position: absolute;
+        text-align: right;
+        right: 1em;
+        font-size: .7rem;
     }
     @media (max-width: 900px) {
         grid-template-areas: 
@@ -61,7 +69,7 @@ const Head = styled.header`
 `
 
 export default function Header() {
-    
+    const { user, error, isLoading } = useUser()
     return (
         <Head>
             <div className='logo'>
@@ -69,12 +77,14 @@ export default function Header() {
                 <Link href="/"><a><Plant className="plant" /></a></Link>
             </div>
             <nav>
-                <Link href="/new"><p onClick={()=> console.log('clicked')}>New</p></Link>
-                <Link href="/active"><p>Active</p></Link>
-                <Link href="/past"><p>Past</p></Link>
+                <Link href="/new"><a onClick={()=> console.log('clicked')}>New</a></Link>
+                <Link href="/active"><a>Active</a></Link>
+                <Link href="/past"><a>Past</a></Link>
             </nav>
             <div className="user">
-                <p>JE</p>
+                {user ? <Link href="/api/auth/logout">LogOut</Link> : <Link href="/api/auth/login">Login</Link>}
+                {user ? <p>{user.name.split(' ').map(word => word[0]).join('')}</p> : <p>Welcome, Guest</p>}
+                
             </div>            
         </Head>
     )
