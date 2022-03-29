@@ -77,7 +77,7 @@ export default function Header() {
                 <Link href="/"><a><Plant className="plant" /></a></Link>
             </div>
             <nav>
-                <Link href="/new"><a onClick={()=> console.log('clicked')}>New</a></Link>
+                <Link href="/new"><a>New</a></Link>
                 <Link href="/active"><a>Active</a></Link>
                 <Link href="/past"><a>Past</a></Link>
             </nav>
