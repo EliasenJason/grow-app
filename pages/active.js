@@ -1,32 +1,44 @@
 import Header from '../components/header'
+import Button from '../components/button'
+import Plants from '../components/plants'
+import CreatePlantForm from '../components/createplant';
 import clientPromise from "../lib/mongodb";
 import Image from 'next/image'
+import { withPageAuthRequired } from '@auth0/nextjs-auth0'
+import { useState } from 'react';
+import { useEffect } from 'react/cjs/react.production.min';
+import styled from 'styled-components'
 
-export default function Active({plants}) {
-  console.log(plants)
+const Container = styled.div`
+  width: 100%;
+`
+
+export default function Active({userData}) {
+  const userName = 'Bob Jones' //need to pull this from auth0
+  const [newPlantForm, setNewPlantForm] = useState(false)
   return (
     <>
       <Header />
-      {plants.map(item => (
-        <div key={item._id}>
-          <h3>{item.name}</h3>
-          <Image src={item.pictureUrl} height="250px" width="250px" alt="loaded image"/>
-        </div>
-      ))}
+      <Container>
+        <Button onclick={() => newPlantForm ? setNewPlantForm(false) : setNewPlantForm(true)}>Create New Plant</Button>
+        {newPlantForm ?  <CreatePlantForm /> : <Plants data={userData} />}
+      </Container>
+      
     </>
   )
 }
 
-
-export async function getServerSideProps(context) {
-  const client = await clientPromise;
-
-  const db = client.db("Testing");
-
-  let plants = await db.collection("names").find({}).toArray();
-  plants = JSON.parse(JSON.stringify(plants));
-
-  return {
-    props: { plants },
-  };
-}
+export const getServerSideProps = withPageAuthRequired({
+  async  getServerSideProps(context) {
+    const client = await clientPromise;
+  
+    const db = client.db("Testing");
+  
+    let userData = await db.collection("plants").findOne({userName: 'Bob Jones'}, {lean: true});
+    userData = JSON.parse(JSON.stringify(userData));
+  
+    return {
+      props: { userData },
+    };
+  }
+})

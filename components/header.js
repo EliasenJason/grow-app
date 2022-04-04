@@ -73,18 +73,16 @@ export default function Header() {
     return (
         <Head>
             <div className='logo'>
-                
                 <Link href="/"><a><Plant className="plant" /></a></Link>
             </div>
             <nav>
-                <Link href="/new"><a>New</a></Link>
-                <Link href="/active"><a>Active</a></Link>
-                <Link href="/past"><a>Past</a></Link>
+                
+                <Link href="/active"><a>Active Plants</a></Link>
+                <Link href="/past"><a>Harvested</a></Link>
             </nav>
             <div className="user">
                 {user ? <Link href="/api/auth/logout">LogOut</Link> : <Link href="/api/auth/login">Login</Link>}
-                {user ? <p>{user.name.split(' ').map(word => word[0]).join('')}</p> : <p>Welcome, Guest</p>}
-                
+                {user ? <p>Welcome, {user.name.split(' ').map(word => word[0]).join('')}</p> : <p>Welcome, Guest</p>}
             </div>            
         </Head>
     )
