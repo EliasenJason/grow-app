@@ -6,10 +6,10 @@ export default async function createPlant(req, res) {
     console.log('connecting to mongo')
     await connectMongo()
     console.log('connected to mongo')
-
-    console.log('creating document')
-    const mongoRes = await PlantsModel.create(req.body)
-    console.log('created document')
+    console.log('this was received', req.body)
+    console.log('retrieving documents')
+    const mongoRes = await PlantsModel.find({userEmail: req.body}).exec()
+    console.log('documents received')
     res.json({ mongoRes })
   } catch(error) {
     console.log(error)

@@ -1,5 +1,7 @@
 import Image from 'next/image'
 import styled from 'styled-components'
+import { useUser } from '@auth0/nextjs-auth0'
+import { useState, useEffect } from 'react'
 
 const Container = styled.div`
   display: grid; 
@@ -9,40 +11,42 @@ const Container = styled.div`
 
 
 
-export default function Plants({data}) {
+export default function Plants() {
+  const [data, setData] = useState(null)
+  const [isLoading, setLoading] = useState(false)
+  const email = useUser().user.email
+  useEffect(() => {
+    setLoading(true)
+    console.log(email)
+    fetch('/api/mongoDB/getUserPlants', {
+      method: 'POST',
+      body: email
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data)
+        setData(data)
+        setLoading(false)
+      })
+  }, [])
+
+  if (isLoading) return <p>Loading...</p>
+  if (!data) return <p>No plants available</p>
+  //useUser().user.email
   
   return (
     <Container>
-      {data.plants.map(plant => {
-        return (
-          <>
-            <p>Plant Name</p><p>Date Planted</p><p>Watered Dates</p><p>Images</p>
-            <Plant key={plant._id} plant={plant} />
-          </>
-        )
-      })}
+      {data.mongoRes.map(item => item.plantName)}
     </Container>
   )
 }
-
-const Plant = function Plant({plant}) {
-  console.log(plant)
-  return (
-    <>
-      <h3>{plant.name}</h3>
-      <p>{plant.plantedDate}</p>
-      <div>
-        {plant.wateredDates.map(date => {
-          return (<p key={date}>{date}</p>)
-        })}
-      </div>
-      <div>
-        {plant.picture.map(picture => {
-          return (<><Image key={picture.url} src={picture.url} width='50px' height='50px' alt='picture of the plant' /><p>{picture.date}</p></>)
-        })}
-      </div>
-    </>
-
-  )
-}
+/*
+const res = await fetch('/api/mongoDB/createPlant', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newPlant)
+        })
+        */
 

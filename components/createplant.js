@@ -17,6 +17,7 @@ export default function CreatePlantForm() {
         setNewPlant(oldPlant => ({
             ...oldPlant,
             [name]: value,
+            userEmail: userEmail
         }))
     }
     
@@ -24,22 +25,16 @@ export default function CreatePlantForm() {
     const handleOnSubmit = async (event) => {
         event.preventDefault();
         setIsLoading(true)
-        setdataForDatabase(values => ({...values, userEmail: userEmail}))
-        sendDataToDatabase({...dataForDatabase, userEmail: userEmail})
+        const res = await fetch('/api/mongoDB/createPlant', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newPlant)
+        })
+        const data = await res.json()
+        console.log(data)
         setIsLoading(false)
-    }
-
-    const sendDataToDatabase = (data) => {
-        console.log('sending data to mongodb: ', data)
-        // setIsLoading(true)
-        // fetch('http://localhost:3000/api/mongoDB/createPlant', {
-        //     method:"POST", 
-        //     body: JSON.stringify({...data})
-        // })
-        // .then(res => {
-        //     console.log('response from mongoDB: ', res)
-        //     setIsLoading(false)
-        // })
     }
     return (
         <form method="post" onSubmit={handleOnSubmit}>
