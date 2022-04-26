@@ -11,14 +11,13 @@ const Container = styled.div`
 `
 
 export default function Active({userData}) {
-  const userName = 'Bob Jones' //need to pull this from auth0
   const [newPlantForm, setNewPlantForm] = useState(false)
   return (
     <>
       <Header />
       <Container>
         {newPlantForm ? <Button onclick={() => newPlantForm ? setNewPlantForm(false) : setNewPlantForm(true)}>cancel</Button> : <Button onclick={() => newPlantForm ? setNewPlantForm(false) : setNewPlantForm(true)}>Create New Plant</Button> }
-        {newPlantForm ?  <CreatePlantForm /> : <Plants />}
+        {newPlantForm ?  <CreatePlantForm setNewPlantForm={setNewPlantForm}/> : <Plants />}
       </Container>
       
     </>

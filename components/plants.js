@@ -1,15 +1,8 @@
 import Image from 'next/image'
 import styled from 'styled-components'
+import PlantContainer from './containers/plant'
 import { useUser } from '@auth0/nextjs-auth0'
 import { useState, useEffect } from 'react'
-
-const Container = styled.div`
-  display: grid; 
-  grid-template-columns: 1fr 1fr 2fr 2fr; 
-  gap: 0px 0px;
-`
-
-
 
 export default function Plants() {
   const [data, setData] = useState(null)
@@ -35,9 +28,12 @@ export default function Plants() {
   //useUser().user.email
   
   return (
-    <Container>
-      {data.mongoRes.map(item => item.plantName)}
-    </Container>
+    <>
+      
+      {data.mongoRes.map(item => {
+          return <PlantContainer plant={item}/>
+        })}
+    </>
   )
 }
 /*

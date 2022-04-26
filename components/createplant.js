@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 //TODO: replace form element below with styled component and make it pretty
 
-export default function CreatePlantForm() {
+export default function CreatePlantForm({setNewPlantForm}) {
     const [newPlant, setNewPlant] = useState({})
     const [isLoading, setIsLoading] = useState(false)
     const userEmail = useUser().user.email
@@ -35,6 +35,7 @@ export default function CreatePlantForm() {
         const data = await res.json()
         console.log(data)
         setIsLoading(false)
+        setNewPlantForm(false)
     }
     return (
         <form method="post" onSubmit={handleOnSubmit}>
