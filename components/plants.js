@@ -31,18 +31,10 @@ export default function Plants() {
     <>
       
       {data.mongoRes.map(item => {
-          return <PlantContainer plant={item}/>
+          return <PlantContainer plant={item} key={item._id}/>
         })}
     </>
   )
 }
-/*
-const res = await fetch('/api/mongoDB/createPlant', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(newPlant)
-        })
-        */
+
 
