@@ -81,7 +81,7 @@ export default function Header() {
                 <Link href="/past"><a>Harvested</a></Link>
             </nav>
             <div className="user">
-                {user ? <Link href="/api/auth/logout">LogOut</Link> : <Link href="/api/auth/login">Login</Link>}
+                {user ? <a href="/api/auth/logout">LogOut</a> : <a href="/api/auth/login">Login</a>}
                 {user ? <p>Welcome, {user.name.split(' ').map(word => word[0]).join('')}</p> : <p>Welcome, Guest</p>}
             </div>            
         </Head>

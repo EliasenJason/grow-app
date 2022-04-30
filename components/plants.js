@@ -3,11 +3,14 @@ import styled from 'styled-components'
 import PlantContainer from './containers/plant'
 import { useUser } from '@auth0/nextjs-auth0'
 import { useState, useEffect } from 'react'
+import { useAlert } from 'react-alert'
 
 export default function Plants() {
   const [data, setData] = useState(null)
   const [isLoading, setLoading] = useState(false)
   const email = useUser().user.email
+  const alert = useAlert()
+
   useEffect(() => {
     setLoading(true)
     console.log(email)
@@ -17,6 +20,7 @@ export default function Plants() {
     })
       .then((res) => res.json())
       .then((data) => {
+        data.error && alert.error('Unable to fetch data')
         console.log(data)
         setData(data)
         setLoading(false)
@@ -29,7 +33,6 @@ export default function Plants() {
   
   return (
     <>
-      
       {data.mongoRes.map(item => {
           return <PlantContainer plant={item} key={item._id}/>
         })}
