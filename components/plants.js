@@ -5,6 +5,12 @@ import { useUser } from '@auth0/nextjs-auth0'
 import { useState, useEffect } from 'react'
 import { useAlert } from 'react-alert'
 
+const DisplayContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5em;
+`
+
 export default function Plants() {
   const [data, setData] = useState(null)
   const [isLoading, setLoading] = useState(false)
@@ -30,13 +36,14 @@ export default function Plants() {
   if (isLoading) return <p>Loading...</p>
   if (!data) return <p>No plants available</p>
   //useUser().user.email
+
   
   return (
-    <>
+    <DisplayContainer>
       {data.mongoRes.map(item => {
           return <PlantContainer plant={item} key={item._id}/>
         })}
-    </>
+    </DisplayContainer>
   )
 }
 
