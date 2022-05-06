@@ -53,8 +53,28 @@ const Plant = styled.div`
 
 
 export default function PlantContainer({plant}) {
-  const [isDeleting, setIsDeleting] = useState(false)
-  const [isDeleted, setIsDeleted] = useState(false)
+  const [ isDeleting, setIsDeleting ] = useState(false)
+  const [ isDeleted, setIsDeleted ] = useState(false)
+  const [ image, setImage ] = useState('')
+  const [ url, setUrl ] = useState(null)
+
+  const uploadImage = async () => {
+    console.log(image)
+    const data = new FormData()
+    data.append('file', image)
+    data.append('upload_preset', 'plant_picture')
+    data.append('cloud_name', 'dzxhltwmz')
+    fetch(process.env.CLOUDINARY_UPLOAD_URL, {
+      method:'post',
+      body: data
+    })
+    .then(resp => resp.json())
+    .then(data => {
+      setUrl(data.url)
+    })
+    .catch(err => console.log(err))
+    //need to add url to mongoDB plant document
+  }
 
   const deletePlant = async ({_id}) => {
     console.log(_id)
@@ -75,15 +95,15 @@ export default function PlantContainer({plant}) {
   } else {
     return (
       <Plant key={plant._id}>
-        <div class="name">{plant.plantName}</div>
-        <div class="picture">
-          <Image src="/images/plantIcon.png" width="200px" height="200px" />
+        <div className="name">{plant.plantName}</div>
+        <div className="picture">
+          <Image src={url ? url : "/images/plantIcon.png"} alt="plant picture" width="200px" height="200px" />
           <h3>Planted: {plant.plantedDate.slice(0,10)}</h3>
         </div>
-        <div class="picture-carousel">this area will have a carousel of mini pictures, onclick to fill above image</div>
-        <div class="water">need to setup a sweet calendar with water symbols</div>
-        <div class="buttons">
-          <button>Add Photo</button>
+        <div className="picture-carousel">setup carousel of all images for specific plant document, onclick to replace upper image</div>
+        <div className="water">need to setup a sweet calendar with water symbols</div>
+        <div className="buttons">
+          <div><input type="file" onChange={(event)=> setImage(event.target.files[0])}></input><button onClick={uploadImage}>Add Photo</button></div>
           <button>Edit</button> {/*bring up a pop up to rename, change planted date, delete water dates, delete pictures, change date of a picture? */}
           {isDeleting ? <button>DELETING...</button> : <button onClick={() => deletePlant(plant)}>Delete</button>}
           <button>Water</button>
