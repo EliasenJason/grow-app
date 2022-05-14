@@ -70,7 +70,19 @@ export default function PlantContainer({plant}) {
     })
     .then(resp => resp.json())
     .then(data => {
+      console.log('sending data url to backend: ', data.url)
+      console.log('sending plant id to backend:', plant._id)
       setUrl(data.url)
+      return fetch('/api/mongoDB/addPhoto', {
+        method:'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ 
+          'url': data.url,
+          'id': plant._id
+        })
+      })
+      .then(res => res.json())
+      .then(data => console.log(data))
     })
     .catch(err => console.log(err))
     //need to add url to mongoDB plant document
