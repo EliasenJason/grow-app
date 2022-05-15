@@ -57,6 +57,7 @@ export default function PlantContainer({plant}) {
   const [ isDeleted, setIsDeleted ] = useState(false)
   const [ image, setImage ] = useState('')
   const [ url, setUrl ] = useState(null)
+  console.log(plant.pictures)
 
   const uploadImage = async () => {
     console.log(image)
@@ -64,6 +65,7 @@ export default function PlantContainer({plant}) {
     data.append('file', image)
     data.append('upload_preset', 'plant_picture')
     data.append('cloud_name', 'dzxhltwmz')
+    console.log(data)
     fetch(process.env.CLOUDINARY_UPLOAD_URL, {
       method:'post',
       body: data
@@ -72,20 +74,24 @@ export default function PlantContainer({plant}) {
     .then(data => {
       console.log('sending data url to backend: ', data.url)
       console.log('sending plant id to backend:', plant._id)
-      setUrl(data.url)
-      return fetch('/api/mongoDB/addPhoto', {
-        method:'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ 
-          'url': data.url,
-          'id': plant._id
+      if (data.url) {
+        setUrl(data.url)
+        return fetch('/api/mongoDB/addPhoto', {
+          method:'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ 
+            'url': data.url,
+            'id': plant._id
+          })
         })
-      })
-      .then(res => res.json())
-      .then(data => console.log(data))
+        .then(res => res.json())
+        .then(data2 => console.log(data2))
+      } else {
+        console.log('did not update mongodb due to missing url')
+      }
+      
     })
     .catch(err => console.log(err))
-    //need to add url to mongoDB plant document
   }
 
   const deletePlant = async ({_id}) => {
@@ -109,10 +115,17 @@ export default function PlantContainer({plant}) {
       <Plant key={plant._id}>
         <div className="name">{plant.plantName}</div>
         <div className="picture">
-          <Image src={url ? url : "/images/plantIcon.png"} alt="plant picture" width="200px" height="200px" />
+          <Image src={plant.pictures ? plant.pictures[plant.pictures.length - 1].url : "/images/plantIcon.png"} alt="plant picture" width="200px" height="200px" />
           <h3>Planted: {plant.plantedDate.slice(0,10)}</h3>
         </div>
-        <div className="picture-carousel">setup carousel of all images for specific plant document, onclick to replace upper image</div>
+        <div className="picture-carousel"> {/* change to carousel of images */}
+          {plant.pictures ? 
+          plant.pictures.map(picture => {
+            return <Image key={picture._id} src={picture.url} alt="plant" width="50px" height="50px" />
+          })
+          : "no pictures yet, upload some!"
+        }
+        </div> 
         <div className="water">need to setup a sweet calendar with water symbols</div>
         <div className="buttons">
           <div><input type="file" onChange={(event)=> setImage(event.target.files[0])}></input><button onClick={uploadImage}>Add Photo</button></div>
