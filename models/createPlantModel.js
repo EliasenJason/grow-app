@@ -16,7 +16,8 @@ const plantSchema = new Schema({
   pictures: {
     type: [{
       date: Date,
-      url: String
+      url: String,
+      cloudinaryId: String
     }],
     default: undefined
   },
@@ -47,7 +48,8 @@ export default PlantsModel
     },
     {
       "date": "2022-04-02", 
-      "url": "http://res.cloudinary.com/dzxhltwmz/image/upload/v1648584419/my_uploads/cesclclohyh2jblidt1z.jpg"
+      "url": "http://res.cloudinary.com/dzxhltwmz/image/upload/v1648584419/my_uploads/cesclclohyh2jblidt1z.jpg",
+      cloudinaryID: "plants/tj7zjyqpl7ge5zq8hhgr"
     }
   ],
   "wateredDates": [

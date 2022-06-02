@@ -6,7 +6,8 @@ export default async function addPhoto(req, res) {
   console.log(req.body)
   console.log('id is: ', req.body.id)
   console.log('url is: ', req.body.url)
-  const update = {"$push": {"pictures": {"url": req.body.url, "date": new Date()}}}
+  console.log('cloudinary ID is: ', req.body.cloudinaryId)
+  const update = {"$push": {"pictures": {"url": req.body.url, "date": new Date(), "cloudinaryId": req.body.cloudinaryId}}}
   try {
     console.log('connecting to mongo')
     await connectMongo()
