@@ -64,7 +64,7 @@ export default function PlantContainer({plant}) {
   const [ isDeleted, setIsDeleted ] = useState(false)
   const [ upLoadImage, setUpLoadImage ] = useState('')
   const [ displayedImage, setDisplayedImage] = useState(plant.pictures ? plant.pictures[plant.pictures.length - 1].url : "/images/plantIcon.png")
-  const [ pictures, setPictures ] = useState(plant.pictures)
+  console.log(plant)
 
   const uploadImage = () => {
     console.log('uploadImage()')
@@ -79,22 +79,18 @@ export default function PlantContainer({plant}) {
     })
     .then(resp => resp.json())
     .then(data => {
+      console.log('***AFTER THIS***')
       console.log(data)
       console.log('sending data url to backend: ', data.url)
       console.log('sending plant id to backend:', plant._id)
       if (data.url) {
         setDisplayedImage(data.url)
-        if (pictures) {
-          setPictures([
-            ...pictures,
-            {date: 'date holder', url: data.url, _id: 'will find out on reload', cloudinaryId: 'unknown'},
-          ])
+        if (plant.pictures) {
+          plant.pictures.push({date: 'date holder', url: data.url, _id: 'will find out on reload', cloudinaryId: data.public_id})
         } else {
-          setPictures([
-            {date: 'date holder', url: data.url, _id: 'will find out on reload', cloudinaryId: 'unknown'},
-          ])
+          plant.pictures = [{date: 'date holder', url: data.url, _id: 'will find out on reload', cloudinaryId: data.public_id}]
         }
-        console.log(pictures)
+        
         return fetch('/api/mongoDB/addPhoto', {
           method:'POST',
           headers: {'Content-Type': 'application/json'},
@@ -114,20 +110,32 @@ export default function PlantContainer({plant}) {
     .catch(err => console.log('error:', err))
   }
 
-  const deletePlant = async ({_id}) => {
-    console.log('deletePlant()')
-    console.log(_id)
+  const deletePlant = async (plant) => {
+    console.log(`deleting plant with id: ${plant._id}`)
+    console.log(`need to delete following images from cloudinary: ${JSON.stringify(plant.pictures)}`)
     setIsDeleting(true)
+
     const res = await fetch('/api/mongoDB/deletePlant', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(plant._id)
+        body: JSON.stringify({
+          mongoID: plant._id,
+          cloudinaryIdArray: plant.pictures
+        })
+
     })
+
     const data = await res.json()
-    data.mongoRes.deletedCount = 1 && setIsDeleted(true)
-    //TODO delete picture out of cloudinary if deletedCount response is true.
+    console.log(`response from deletePlant api: ${data.mongoRes}`)
+    if (data.mongoRes.deletedCount == 1) {
+      console.log('SUCCESS')
+      setIsDeleted(true)
+    } else {
+      console.log('OH FUCK IT DIDN"T DELETE! figure out why')
+    }
+    // TODO delete picture out of cloudinary if deletedCount response is true.
     setIsDeleting(false)
   }
   if (isDeleted) {
@@ -141,8 +149,8 @@ export default function PlantContainer({plant}) {
           <h3>Planted: {plant.plantedDate.slice(0,10)}</h3>
         </div>
         <div className="picture-carousel"> {/* change to carousel of images */}
-          {pictures ? 
-            pictures.map(picture => {
+          {plant.pictures ? 
+            plant.pictures.map(picture => {
             return <SmallPicture key={picture._id} active={displayedImage === picture.url}><Image src={picture.url} alt="plant" width="100%" height="100%" onClick={() => setDisplayedImage(picture.url)} /></SmallPicture>
           })
           : "no pictures yet, upload some!"
